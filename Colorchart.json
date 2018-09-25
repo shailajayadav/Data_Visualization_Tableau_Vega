@@ -1,0 +1,40 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v2.1.json",
+  "width": 500,
+  "height": 300,
+  "data": {
+    "url": "data/us-10m.json",
+    "format": {
+      "type": "topojson",
+      "feature": "states"
+    }
+  },
+  "transform": [{
+    "lookup": "id",
+    "from": {
+      "data": {
+        "url": "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/losses2015_transformed.csv"
+      },
+      "key": "State_Code",
+      "type": "facet", "aggregate":"sum","fields":["Amount"],"groupby": ["State_Abv"],"type":"quantitative",
+      "fields": ["Amount","State_Abv"]
+    }
+  }],
+  "projection": {
+    "type": "albersUsa"
+  },
+
+  "mark": "geoshape",
+  "encoding": {
+    "color": {
+      "fill":"State_Abv",
+      "field": "Amount",
+      "type": "geojson",
+      "update": { "fill": {"scale": "color", "field": "State_Abv"} },
+      "hover": { "fill": {"value": "red"} }
+    },
+    "transform": [
+        { "type": "geoshape", "projection": "projection" }
+      ]
+  }
+}
