@@ -12,20 +12,14 @@
 
 </head>
 <body>
-
-<!-- Container for the visualization -->
 <div id="vis"></div>
 <div id="vis1"></div>
-
-
 <script type="text/javascript">
-  // var spec = "our_bar_chart.json";
-  // this does not work when you run locally due to security reasons - it needs to be read from a server
-  var spec = "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/barchart.json";
-  vegaEmbed('#vis', spec).then(function(result) {
-  }).catch(console.error);
   var spec1 = "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/choropleth.json";
-  vegaEmbed('#vis1', spec1).then(function(result) {
+  vegaEmbed('#vis', spec1).then(function(result) {
+  }).catch(console.error);
+  var spec = "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/barchart.json";
+  vegaEmbed('#vis1', spec).then(function(result) {
   }).catch(console.error);
 </script>
 
