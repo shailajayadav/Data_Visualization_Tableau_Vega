@@ -9,7 +9,14 @@
     {
       "name": "source_1",
       "url": "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/losses2015_transformed.csv",
-      "format": {"type": "csv", "delimiter": ","}
+      "format": {"type": "csv", "parse": "auto"},
+      "transform":[
+         {"type": "aggregate",
+         "groupby": ["State_Code","State_Abv"],
+         "ops": ["sum"],
+         "fields": ["Amount"],
+          "as": ["Amount"]
+         }]
     },
     {
       "name": "source_0",
@@ -34,6 +41,15 @@
       "type": "albersUsa"
     }
   ],
+  "scales": [
+    {
+      "name": "color",
+      "type": "quantize",
+      "domain": [0, 0.15],
+      "range": {"scheme": "blues", "count": 7}
+
+    }
+  ],
   "marks": [
     {
       "name": "marks",
@@ -43,8 +59,9 @@
       "encode": {
         "update": {
           "fill": {"scale": "color", "field": "Amount"},
-          "tooltip": {"signal": "{\"Amount\": ''+datum[\"Amount\"]}"}
-        }
+          "tooltip": {"signal": "{\"State\": ''+datum[\"State_Abv\"]+','+\"Total Amount:\" +' ' + datum[\"Amount\"]}"}
+        },
+        "hover": {"fill": {"value": "green"}}
       },
       "transform": [{"type": "geoshape", "projection": "projection"}]
     }
@@ -57,5 +74,5 @@
     }
   ],
   "legends": [{"fill": "color", "title": "Amount"}],
-  "config": {"axisY": {"minExtent": 30}}
+  "config": {"axisY": {"minExtent": 0}}
 }
