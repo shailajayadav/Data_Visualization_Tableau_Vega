@@ -1,40 +1,61 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v2.1.json",
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
+  "autosize": "pad",
+  "padding": 5,
   "width": 500,
   "height": 300,
-  "data": {
-    "url": "data/us-10m.json",
-    "format": {
-      "type": "topojson",
-      "feature": "states"
-    }
-  },
-  "transform": [{
-    "lookup": "id",
-    "from": {
-      "data": {
-        "url": "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/losses2015_transformed.csv"
-      },
-      "key": "State_Code",
-      "type": "facet", "aggregate":"sum","fields":["Amount"],"groupby": ["State_Abv"],"type":"quantitative",
-      "fields": ["Amount","State_Abv"]
-    }
-  }],
-  "projection": {
-    "type": "albersUsa"
-  },
-
-  "mark": "geoshape",
-  "encoding": {
-    "color": {
-      "fill":"State_Abv",
-      "field": "Amount",
-      "type": "geojson",
-      "update": { "fill": {"scale": "color", "field": "State_Abv"} },
-      "hover": { "fill": {"value": "red"} }
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_1",
+      "url": "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/losses2015_transformed.csv",
+      "format": {"type": "csv", "delimiter": ","}
     },
-    "transform": [
-        { "type": "geoshape", "projection": "projection" }
+    {
+      "name": "source_0",
+      "url": "data/us-10m.json",
+      "format": {"type": "topojson", "feature": "states"},
+      "transform": [
+        {
+          "type": "lookup",
+          "from": "source_1",
+          "key": "State_Code",
+          "fields": ["id"],
+          "values": ["Amount", "State_Abv"]
+        }
       ]
-  }
+    }
+  ],
+  "projections": [
+    {
+      "name": "projection",
+      "size": {"signal": "[width, height]"},
+      "fit": {"signal": "data('source_0')"},
+      "type": "albersUsa"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "shape",
+      "style": ["geoshape"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "Amount"},
+          "tooltip": {"signal": "{\"Amount\": ''+datum[\"Amount\"]}"}
+        }
+      },
+      "transform": [{"type": "geoshape", "projection": "projection"}]
+    }
+  ],
+  "scales": [
+    {
+      "name": "color",
+      "domain": {"data": "source_0", "field": "Amount"},
+      "range": "heatmap"
+    }
+  ],
+  "legends": [{"fill": "color", "title": "Amount"}],
+  "config": {"axisY": {"minExtent": 30}}
 }
