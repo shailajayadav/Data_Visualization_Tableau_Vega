@@ -73,6 +73,5 @@
       "range": "heatmap"
     }
   ],
-  "legends": [{"fill": "color", "title": "Amount"}],
   "config": {"axisY": {"minExtent": 0}}
 }
