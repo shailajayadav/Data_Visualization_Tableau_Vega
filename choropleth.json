@@ -59,7 +59,7 @@
       "encode": {
         "update": {
           "fill": {"scale": "color", "field": "Amount"},
-          "tooltip": {"signal": "{\"State\": ''+datum[\"State_Abv\"]+','+\"Total Amount:\" +' ' + datum[\"Amount\"]}"}
+          "tooltip": {"signal": "{\"Amount\": format(datum[\"Amount\"], \"\"), \"State\": ''+datum[\"State_Abv\"]}"}
         },
         "hover": {"fill": {"value": "green"}}
       },
