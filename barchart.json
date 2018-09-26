@@ -1,22 +1,117 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
   "description": "A bar chart showing the US population distribution of age groups in 2000.",
-  "width": 1200,
-  "data": {
-    "url": "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/losses2015_transformed.csv"
-  },
-  "mark": "bar",
-  "encoding": {
-    "y": {
-      "field": "Damage_Descp",
-      "type": "ordinal",
-      "sort": {"op": "sum", "field": "Amount"}
+  "autosize": "pad",
+  "padding": 5,
+  "width": 500,
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/shailajayadav/Visual-Analytics/master/losses2015_transformed.csv",
+      "format": {"type": "csv", "parse": {"Amount": "number"}, "delimiter": ","}
     },
-    "x": {
-      "aggregate": "sum",
-      "field": "Amount",
-      "type": "quantitative",
-      "axis": {"title": "Amount"}
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["Damage_Descp"],
+          "ops": ["sum"],
+          "fields": ["Amount"],
+          "as": ["sum_Amount"]
+        }
+      ]
     }
-  }
+  ],
+  "signals": [
+    {"name": "y_step", "value": 21},
+    {
+      "name": "height",
+      "update": "bandspace(domain('y').length, 0.1, 0.05) * y_step"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["bar"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "fill": [
+            {
+              "test": "datum[\"sum_Amount\"] === null || isNaN(datum[\"sum_Amount\"])",
+              "value": null
+            },
+            {"value": "#4c78a8"}
+          ],
+          "tooltip": {
+            "signal": "{\"Amount\": format(datum[\"sum_Amount\"], \"\"), \"Damage_Descp\": ''+datum[\"Damage_Descp\"]}"
+          },
+          "x": {"scale": "x", "field": "sum_Amount"},
+          "x2": {"scale": "x", "value": 0},
+          "y": {"scale": "y", "field": "Damage_Descp"},
+          "height": {"scale": "y", "band": true}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {"data": "data_0", "field": "sum_Amount"},
+      "range": [0, {"signal": "width"}],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "band",
+      "domain": {
+        "data": "source_0",
+        "field": "Damage_Descp",
+        "sort": {"op": "sum", "field": "Amount"}
+      },
+      "range": {"step": {"signal": "y_step"}},
+      "paddingInner": 0.1,
+      "paddingOuter": 0.05
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Amount",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 1
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "gridScale": "y",
+      "grid": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "domain": false,
+      "labels": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Damage_Descp",
+      "labelOverlap": true,
+      "zindex": 1
+    }
+  ],
+  "config": {"axisY": {"minExtent": 30}}
 }
