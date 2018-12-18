@@ -1,2 +1,2 @@
-# Visual-Analytics
-Created report in Vega and Tableau 
+# Data Visualization
+Created Visualization of data as part of one mini assignment for my course requirement.
