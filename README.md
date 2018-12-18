@@ -1,4 +1,4 @@
-# Data Visualization
+# Data Visualization in Vega,D3,Tableau
 Created Visualization of data as part of one assignment for my course .The data was visulaized in Vega,D3 as well as Tableau.
 Data which I used here is losses2015_transformed.csv.
 
